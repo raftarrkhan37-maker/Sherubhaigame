@@ -101,7 +101,7 @@ video::-webkit-media-controls-enclosure{overflow:hidden}
       autoplay
       oncontextmenu="return false;"
       ondragstart="return false;">
-      <source src="https://ultimatetop.in/Sheru%20bhai%20video/1795338068949_1000106952.mp4" type="video/mp4">
+      <source src="https://ultimatetop.in/Sheru%20bhai%20video/DC9BE725-1232-4AF5-9D08-513EE75C465C.mov" type="video/mp4">
       Your browser does not support video playback.
     </video>
   </div>
@@ -196,14 +196,26 @@ document.addEventListener('DOMContentLoaded', function() {
       video.addEventListener('canplay', attemptPlay, { once: true });
     }
 
-    // Auto switch to WhatsApp Channel video after first video ends
-    let hasSwitched = false;
+    // Auto switch: First video → Second video → Back to First (stopped)
+    let isSecondVideo = false;
+    const firstVideoSrc = 'https://ultimatetop.in/Sheru%20bhai%20video/DC9BE725-1232-4AF5-9D08-513EE75C465C.mov';
+    const secondVideoSrc = 'https://ultimatetop.in/Whatapp%20channel%20video/All_Theme_Last_Clip.mp4';
+
     video.addEventListener('ended', function() {
-      if (hasSwitched) return;
-      hasSwitched = true;
-      video.src = 'https://ultimatetop.in/Whatapp%20channel%20video/All_Theme_Last_Clip.mp4';
-      video.load();
-      video.play().catch(() => {});
+      if (!isSecondVideo) {
+        // First video finished → play second
+        isSecondVideo = true;
+        video.src = secondVideoSrc;
+        video.load();
+        video.play().catch(() => {});
+      } else {
+        // Second video finished → go back to first and stop at start
+        isSecondVideo = false;
+        video.src = firstVideoSrc;
+        video.load();
+        video.currentTime = 0;
+        // Do not autoplay — stay paused at the beginning of first clip
+      }
     });
   }
 
